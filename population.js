@@ -8,8 +8,6 @@ module.exports = {
             }
         }
 
-        console.log(population)
-
         return population
     }
 }
