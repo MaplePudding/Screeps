@@ -4,7 +4,7 @@ let resource = require("./resource")
 
 module.exports = {
     roleAttribute_1: [MOVE, MOVE, WORK, CARRY],
-    roleAttribute_2: [WORK, WORK, MOVE, MOVE, MOVE, CARRY],
+    roleAttribute_2: [WORK, WORK, CARRY, MOVE, MOVE, CARRY],
 
     /**
      * Check the population
@@ -23,9 +23,9 @@ module.exports = {
 
         let creepName = "Upgrader" + date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
 
-        if(Game.rooms["E37N3"].energyCapacityAvailable < 400){
+        if(Game.rooms["E37N3"].energyAvailable < 400){
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "upgrader", upgrading: false}})
-        }else if(Game.rooms["E37N3"].energyCapacityAvailable >= 400  && Game.rooms["E37N3"].energyCapacityAvailable < 600){
+        }else if(Game.rooms["E37N3"].energyAvailable >= 400  && Game.rooms["E37N3"].energyAvailable < 600){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "upgrader", upgrading: false}})
         }
     },

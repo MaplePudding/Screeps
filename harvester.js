@@ -1,20 +1,17 @@
 let population = require("./population")
 let createCreep = require("./createCreep")
 let resource = require("./resource");
-const structure = require("./structure");
 
 module.exports = {
-
-    roleAttribute_1: [CARRY, WORK, MOVE],
-    roleAttribute_2: [CARRY, WORK, MOVE, MOVE],
-    roleAttribute_3: [CARRY, MOVE, MOVE, MOVE, WORK, WORK],
+    roleAttribute_1: [CARRY, WORK, MOVE, MOVE],
+    roleAttribute_2: [CARRY, WORK, MOVE, MOVE, MOVE, CARRY],
+    roleAttribute_3: [CARRY, MOVE, MOVE, WORK, WORK, CARRY, MOVE, WORK],
     /**
      * Check the population
      */
     
     checkHarvesterPopulation: function(){
         return population.checkPopulation("harvester");
-
     },
 
     /**
@@ -26,12 +23,12 @@ module.exports = {
 
         let creepName = "Harvester" + date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
 
-        if(Game.rooms["E37N3"].energyCapacityAvailable < 250){
-            createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "harvester"}})
-        }else if(Game.rooms["E37N3"].energyCapacityAvailable >= 250 && Game.rooms["E37N3"].energyCapacityAvailable < 450){
-            createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "harvester"}})
-        }else if(Game.rooms["E37N3"].energyCapacityAvailable >= 400 && Game.rooms["E37N3"].energyCapacityAvailable < 600){
-            createCreep.createCreep(this.roleAttribute_3, creepName, {memory: {role: "harvester"}})
+        if(Game.rooms["E37N3"].energyAvailable <= 350){
+            createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "harvester", harvesting: false}})
+        }else if(Game.rooms["E37N3"].energyAvailable > 350 && Game.rooms["E37N3"].energyAvailable < 450){
+            createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "harvester", harvesting: false}})
+        }else if(Game.rooms["E37N3"].energyAvailable >= 450 && Game.rooms["E37N3"].energyAvailable < 600){
+            createCreep.createCreep(this.roleAttribute_3, creepName, {memory: {role: "harvester", harvesting: false}})
         }
 
     },
@@ -41,8 +38,16 @@ module.exports = {
      */
 
     simpleRun: function(harvester){
+
+        if(!harvester.store[RESOURCE_ENERGY]){
+            harvester.memory.harvesting = false;
+        }
+
+        if(harvester.store[RESOURCE_ENERGY] === harvester.store.getCapacity(RESOURCE_ENERGY)){
+            harvester.memory.harvesting = true;
+        }
         
-        if(harvester.carry.energy < harvester.carryCapacity){
+        if(!harvester.memory.harvesting){
             resource.getEnergy(harvester)
         }else{
             let targetArray = harvester.room.find(FIND_STRUCTURES, {

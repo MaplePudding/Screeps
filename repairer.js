@@ -1,16 +1,17 @@
 let population = require("./population")
 let createCreep = require("./createCreep")
 let resource = require("./resource")
+let harvester = require("./harvester")
 
 module.exports = {
     roleAttribute_1: [MOVE, MOVE, WORK, CARRY],
-    roleAttribute_2: [WORK, WORK, MOVE, MOVE, MOVE, CARRY],
+    roleAttribute_2: [WORK, MOVE, MOVE, CARRY, CARRY, MOVE],
 
     /**
      * Check the population
      */
 
-    checkUpgraderPopulation: function(){
+    checkRepairerPopulation: function(){
         return population.checkPopulation("repairer");
     },
 
@@ -18,16 +19,24 @@ module.exports = {
      * Get a upgrader
      */
 
-    createUpgrader: function(){
+    createRepairer: function(){
         let date = new Date();
 
         let creepName = "Repairer" + date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
 
-        if(Game.rooms["E37N3"].energyCapacityAvailable < 400){
-            createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "repairer", repairing: false}})
-        }else if(Game.rooms["E37N3"].energyCapacityAvailable >= 400  && Game.rooms["E37N3"].energyCapacityAvailable < 500){
-            createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "repairer", repairing: false}})
+        if(Game.rooms["E37N3"].energyAvailable < 450){
+            createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "repairer", repairing: false, harvesting: false}})
+        }else if(Game.rooms["E37N3"].energyAvailable >= 450  && Game.rooms["E37N3"].energyAvailable < 550){
+            createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "repairer", repairing: false, harvesting: false}})
         }
+    },
+
+    getRepaireTargetArr: function(repairer){
+        return repairer.room.find(FIND_STRUCTURES, {
+            filter: (object) =>{
+                return object.hits < object.hitsMax;
+            }
+        }).sort((a,b) => a.hits - b.hits);
     },
 
     /**
@@ -39,18 +48,30 @@ module.exports = {
         if(!repairer.store[RESOURCE_ENERGY]){
             repairer.memory.repairing = false;
         }
+
         if(repairer.store[RESOURCE_ENERGY] === repairer.store.getCapacity()){
             repairer.memory.repairing = true;
         }
 
-        if(upgrader.memory.upgrading){
-            if(upgrader.upgradeController(upgrader.room.controller) === ERR_NOT_IN_RANGE){
-                upgrader.moveTo(upgrader.room.controller);
-            }else{
-                upgrader.upgradeController(upgrader.room.controller);
-            }
+        let targetArray = this.getRepaireTargetArr(repairer);
+
+        if(targetArray.length === 0){
+            harvester.simpleRun(repairer);
         }else{
-            resource.getEnergy(upgrader);
+
+            /**
+            * Repaire target
+            */
+            
+            if(repairer.memory.repairing){
+                if(repairer.repair(targetArray[0]) === ERR_NOT_IN_RANGE) {
+                    repairer.moveTo(targetArray[0]);
+                }else{
+                    repairer.repair(targetArray[0])
+                }
+            }else{
+                resource.getEnergy(repairer);
+            }
         }
     }
 }

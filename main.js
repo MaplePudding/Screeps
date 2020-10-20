@@ -3,6 +3,8 @@ const Harvester = require("./harvester");
 const Upgrader = require("./upgrader");
 const Defender = require("./defender");
 const Structure = require("./structure");
+const Repairer = require("./repairer");
+const Maintainer = require("./maintainer");
 
 /**
  * Delete dead creep
@@ -35,34 +37,61 @@ function simpleRunBuilder(){
 function simpleRunUpgrader(){
     for(creep in Game.creeps){
         if(Game.creeps[creep].memory.role === "upgrader"){
-            Upgrader.simpleRun(Game.creeps[creep])
+            Upgrader.simpleRun(Game.creeps[creep]);
         }
     }
 }
 
-module.exports.loop = function(){
-    deleteCreep();
+function simpleRunRepairer(){
+    for(creep in Game.creeps){
+        if(Game.creeps[creep].memory.role === "repairer"){
+            Repairer.simpleRun(Game.creeps[creep]);
+        }
+    }
+}
 
-    if(Harvester.checkHarvesterPopulation() < 5){
+function simpleRunMaintainer(){
+    for(creep in Game.creeps){
+        if(Game.creeps[creep].memory.role === "maintainer"){
+            Maintainer.simpleRun(Game.creeps[creep]);
+        }
+    }
+}
+
+function createCreep(){
+    if(Harvester.checkHarvesterPopulation() < 7){
         Harvester.createHarvester();
     }
 
-    if(Builder.checkBuilderPopulation() < 6){
+    if(Builder.checkBuilderPopulation() < 3 && Harvester.checkHarvesterPopulation > 5){
         Builder.createBuilder();
     }
 
-    if(Upgrader.checkUpgraderPopulation() < 3){
+    if(Upgrader.checkUpgraderPopulation() < 4 && Harvester.checkHarvesterPopulation > 3){
         Upgrader.createUpgrader();
     }
 
+    if(Repairer.checkRepairerPopulation() < 2 && Harvester.checkHarvesterPopulation > 5){
+        Repairer.createRepairer();
+    }
+}
 
+function createAllStructure(){
+    Structure.createStructure("extention");
+    Structure.createStructure("road");
+    Structure.createStructure("tower");
+}
 
+function simpleRun(){
     simpleRunHarvester();
     simpleRunBuilder();
     simpleRunUpgrader();
+    simpleRunRepairer();
+}
 
-
-    Structure.createStructure("extention");
-    Structure.createStructure("road");
-    Structure.createStructure("tower")
+module.exports.loop = function(){
+    deleteCreep();
+    createCreep();
+    simpleRun();
+    createAllStructure();
 }

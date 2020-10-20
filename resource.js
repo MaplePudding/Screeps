@@ -1,9 +1,7 @@
-const structure = require("./structure");
-
 module.exports = {
     getEnergy: function(creep){
 
-        if(creep.memory.role === "harvester"){
+        if(creep.memory.role === "harvester" || creep.memory.role === "upgrader"){
 
             /**
              * The function fro harvester
@@ -23,7 +21,7 @@ module.exports = {
                 }
             })
 
-            if(resourceArray.length != 0){
+            if(resourceArray.length != 0 && Game.rooms["E37N3"].energyAvailable >= 250){
 
                 /**
                  * Get energy from spawn or extention
