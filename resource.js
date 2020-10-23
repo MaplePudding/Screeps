@@ -21,7 +21,7 @@ module.exports = {
                 }
             })
 
-            if(resourceArray.length != 0 && Game.rooms["E37N3"].energyAvailable >= 250){
+            if(resourceArray.length != 0 && Game.rooms["E37N3"].energyAvailable >= 50){
 
                 /**
                  * Get energy from spawn or extention

@@ -1,6 +1,7 @@
 let population = require("./population")
 let createCreep = require("./createCreep")
 let resource = require("./resource")
+const structure = require("./structure")
 
 module.exports = {
     roleAttribute_1: [WORK, MOVE, MOVE, CARRY],
@@ -21,7 +22,7 @@ module.exports = {
         
         if(Game.rooms["E37N3"].energyAvailable <= 500){
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "maintainer", maintaining: false, harvesting: false}});
-        }else if(Game.rooms["E37N3"].energyAvailable > 500 && Game.rooms["E37N3"].energyAvailable < 650){
+        }else if(Game.rooms["E37N3"].energyAvailable > 500){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "maintainer", maintaining: false, harvesting: false}});
         }
     },
@@ -74,7 +75,7 @@ module.exports = {
             maintainer.memory.maintaining = false;
         }
 
-        if(maintainer.store[RESOURCE_ENERGY] === maintainer.sotre.getCapacity(RESOURCE_ENERGY)){
+        if(maintainer.store[RESOURCE_ENERGY] === maintainer.store.getCapacity(RESOURCE_ENERGY)){
             maintainer.memory.maintaining = true;
         }
     },
@@ -83,7 +84,11 @@ module.exports = {
 
         this.changeMaintainerHarvestingStatus(maintainer);
 
-        let targetArray = maintainer.room.find(STRUCTURE_TOWER);
+        let targetArray = maintainer.room.find(FIND_STRUCTURES, {
+            filter: (structure) =>{
+                return structure.structureType === STRUCTURE_TOWER;
+            }
+        });
 
         if(targetArray.length === 0){
             this.getEnergyNoTarget(maintainer)
@@ -96,10 +101,11 @@ module.exports = {
              */
             
             if(maintainer.memory.maintaining){
-                if(maintainer.transfer(targetArray[0]) === ERR_NOT_IN_RANGE){
+                
+                if(maintainer.transfer(targetArray[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE){
                     maintainer.moveTo(targetArray[0]);
                 }else{
-                    maintainer.transfer(targetArray[0]);
+                    maintainer.transfer(targetArray[0], RESOURCE_ENERGY);
                 }
             }else{
                 resource.getEnergy(maintainer);

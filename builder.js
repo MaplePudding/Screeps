@@ -22,7 +22,7 @@ module.exports = {
         
         if(Game.rooms["E37N3"].energyAvailable <= 400){
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "builder", building: false, harvesting: false}})
-        }else if(Game.rooms["E37N3"].energyAvailable > 400 && Game.rooms["E37N3"].energyAvailable < 650){
+        }else if(Game.rooms["E37N3"].energyAvailable > 400){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "builder", building: false, harvesting: false}})
         }
     },
@@ -91,7 +91,7 @@ module.exports = {
         let siteArray = builder.room.find(FIND_CONSTRUCTION_SITES);
 
         if(siteArray.length === 0){
-            
+            this.getEnergyNoSite(builder);
         }else{
 
             /**

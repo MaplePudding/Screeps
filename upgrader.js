@@ -25,7 +25,7 @@ module.exports = {
 
         if(Game.rooms["E37N3"].energyAvailable < 400){
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "upgrader", upgrading: false}})
-        }else if(Game.rooms["E37N3"].energyAvailable >= 400  && Game.rooms["E37N3"].energyAvailable < 600){
+        }else if(Game.rooms["E37N3"].energyAvailable >= 400 ){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "upgrader", upgrading: false}})
         }
     },

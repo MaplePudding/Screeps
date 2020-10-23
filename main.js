@@ -5,6 +5,7 @@ const Defender = require("./defender");
 const Structure = require("./structure");
 const Repairer = require("./repairer");
 const Maintainer = require("./maintainer");
+const structure = require("./structure");
 
 /**
  * Delete dead creep
@@ -63,16 +64,20 @@ function createCreep(){
         Harvester.createHarvester();
     }
 
-    if(Builder.checkBuilderPopulation() < 3 && Harvester.checkHarvesterPopulation > 5){
+    if(Builder.checkBuilderPopulation() < 3 && Harvester.checkHarvesterPopulation() > 5){
         Builder.createBuilder();
     }
 
-    if(Upgrader.checkUpgraderPopulation() < 4 && Harvester.checkHarvesterPopulation > 3){
+    if(Upgrader.checkUpgraderPopulation() < 4 && Harvester.checkHarvesterPopulation() > 3){
         Upgrader.createUpgrader();
     }
 
-    if(Repairer.checkRepairerPopulation() < 2 && Harvester.checkHarvesterPopulation > 5){
+    if(Repairer.checkRepairerPopulation() < 2 && Harvester.checkHarvesterPopulation() > 5){
         Repairer.createRepairer();
+    }
+
+    if(Maintainer.checkMaintainerPopulation() < 2 && Harvester.checkHarvesterPopulation() > 4){
+        Maintainer.createMaintainer();
     }
 }
 
@@ -87,6 +92,8 @@ function simpleRun(){
     simpleRunBuilder();
     simpleRunUpgrader();
     simpleRunRepairer();
+    simpleRunMaintainer();
+    structure.runTower();
 }
 
 module.exports.loop = function(){
@@ -94,4 +101,6 @@ module.exports.loop = function(){
     createCreep();
     simpleRun();
     createAllStructure();
+
+
 }
