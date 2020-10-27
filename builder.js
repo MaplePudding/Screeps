@@ -6,6 +6,7 @@ let harvester = require("./harvester")
 module.exports = {
     roleAttribute_1: [WORK, MOVE, MOVE, CARRY],
     roleAttribute_2: [WORK, WORK, MOVE, MOVE, MOVE, CARRY],
+    roleAttribute_3: [WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
 
     checkBuilderPopulation: function(){
         return population.checkPopulation("builder")
@@ -22,8 +23,10 @@ module.exports = {
         
         if(Game.rooms["E37N3"].energyAvailable <= 400){
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "builder", building: false, harvesting: false}})
-        }else if(Game.rooms["E37N3"].energyAvailable > 400){
+        }else if(Game.rooms["E37N3"].energyAvailable > 400 && Game.rooms["E37N3"].energyAvailable <= 650){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "builder", building: false, harvesting: false}})
+        }else if(Game.rooms["E37N3"].energyAvailable > 650){
+            createCreep.createCreep(this.roleAttribute_3, creepName, {memory: {role: "builder", building: false, harvesting: false}})
         }
     },
 
@@ -62,11 +65,11 @@ module.exports = {
 
     changeBuilderHarvestingStatus: function(builder){
         if(builder.store[RESOURCE_ENERGY] === 0){
-            builder.memory.building = false;
+            builder.memory.harvesting = false;
         }
         
         if(builder.store[RESOURCE_ENERGY] === builder.store.getCapacity()){
-            builder.memory.building = true;
+            builder.memory.harvesting = true;
         }
     },
 

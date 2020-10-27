@@ -6,6 +6,7 @@ module.exports = {
     roleAttribute_1: [CARRY, WORK, MOVE, MOVE],
     roleAttribute_2: [CARRY, WORK, MOVE, MOVE, MOVE, CARRY],
     roleAttribute_3: [CARRY, MOVE, MOVE, WORK, WORK, CARRY, MOVE, WORK],
+    roleAttribute_4: [CARRY, CARRY, CARRY, WORK, WORK, WORK, MOVE, MOVE, MOVE],
     /**
      * Check the population
      */
@@ -27,8 +28,10 @@ module.exports = {
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "harvester", harvesting: false}})
         }else if(Game.rooms["E37N3"].energyAvailable > 350 && Game.rooms["E37N3"].energyAvailable < 550){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "harvester", harvesting: false}})
-        }else if(Game.rooms["E37N3"].energyAvailable >= 550){
+        }else if(Game.rooms["E37N3"].energyAvailable >= 550 && Game.rooms["E37N3"].energyAvailable < 700){
             createCreep.createCreep(this.roleAttribute_3, creepName, {memory: {role: "harvester", harvesting: false}})
+        }else if(Game.rooms["E37N3"].energyAvailable >= 700){
+            createCreep.createCreep(this.roleAttribute_4, creepName, {memory: {role: "harvester", harvesting: false}})
         }
 
     },

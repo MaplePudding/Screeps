@@ -6,6 +6,7 @@ let harvester = require("./harvester")
 module.exports = {
     roleAttribute_1: [MOVE, MOVE, WORK, CARRY],
     roleAttribute_2: [WORK, MOVE, MOVE, CARRY, CARRY, MOVE],
+    roleAttribute_3: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
 
     /**
      * Check the population
@@ -26,8 +27,10 @@ module.exports = {
 
         if(Game.rooms["E37N3"].energyAvailable < 450){
             createCreep.createCreep(this.roleAttribute_1, creepName, {memory: {role: "repairer", repairing: false, harvesting: false}})
-        }else if(Game.rooms["E37N3"].energyAvailable >= 450  ){
+        }else if(Game.rooms["E37N3"].energyAvailable >= 450 && Game.rooms["E37N3"].energyAvailable < 650){
             createCreep.createCreep(this.roleAttribute_2, creepName, {memory: {role: "repairer", repairing: false, harvesting: false}})
+        }else if(Game.rooms["E37N3"].energyAvailable >= 650){
+            createCreep.createCreep(this.roleAttribute_3, creepName, {memory: {role: "repairer", repairing: false, harvesting: false}})
         }
     },
 
